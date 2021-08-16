@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'machina.apps.forum_tracking',
     'machina.apps.forum_member',
     'machina.apps.forum_permission',
+
+    'api.apps.ApiConfig',
 ]
 
 MIDDLEWARE = [
@@ -150,6 +152,7 @@ FILE_UPLOAD_PERMISSIONS = 0o644
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+FROM_EMAIL = 'notificator@service.com'
 
 INTERNAL_IPS: List[str] = env.list('INTERNAL_IPS')
 

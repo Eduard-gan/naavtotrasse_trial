@@ -48,4 +48,4 @@ env/*
 celerybeat-schedule
 
 /media/
-
+.idea
