@@ -10,4 +10,4 @@ class ForumReadTrackViewSet(viewsets.ModelViewSet):
     """
     queryset = ForumReadTrack.objects.all().order_by('id')
     serializer_class = ForumReadTrackSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
