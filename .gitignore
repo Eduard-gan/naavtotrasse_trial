@@ -1,0 +1,51 @@
+# .htaccess
+.htaccess
+
+# Database
+
+*.sqlite3
+
+# media files
+auto_cat/media/*
+auto_cat/uploads/*
+# log
+auto_cat/logs/*
+
+# Static
+auto_cat/static/__build/*
+
+# Python files
+*.py[co]
+*.pyc
+
+# django locale
+*.mo
+
+# Trash
+/cache
+/node_modules
+/sphinx
+/tmp
+/CACHE
+*.bat
+*.swp
+sphinx.conf
+TODO
+__pycache__
+*.log
+*.pot
+*.pickle
+*.lock
+*.bak
+
+# Env #
+venv/*
+env/*
+.venv/*
+/.env
+
+# celery
+celerybeat-schedule
+
+/media/
+
