@@ -1,0 +1,88 @@
+version: '3.7'
+
+services:
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    command: python manage.py runserver 0.0.0.0:8005
+    volumes:
+      - static_volume:/code/static
+      - media_volume:/code/media
+    ports:
+      - 8005:8005
+    depends_on:
+      - db
+      - rabbitmq
+      - redis
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - media_volume:/code/media
+    command: bash -c "celery -A forum_test beat -l info"
+    depends_on:
+      - db
+      - rabbitmq
+      - redis
+      - django
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - media_volume:/code/media
+    command: bash -c "celery -A forum_test worker -l info"
+    depends_on:
+      - db
+      - rabbitmq
+      - redis
+      - django
+      - celery-beat
+
+  db:
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    restart: always
+    volumes:
+      - mysql_vol:/var/lib/mysql
+    ports:
+      - 23306:3306
+    env_file:
+      - ./.env
+
+  redis:
+    image: redis:6
+    command: redis-server --maxmemory 512mb --maxmemory-policy volatile-lru --appendonly yes
+    restart: always
+    volumes:
+      - redis_vol:/data
+    ports:
+      - 26379:6379
+    depends_on:
+      - db
+
+  rabbitmq:
+    image: rabbitmq:3.8
+    command: rabbitmq-server --memory 1024m -e RABBITMQ_VM_MEMORY_HIGH_WATERMARK=0.50
+    restart: always
+    volumes:
+      - rabbitmq_vol:/var/lib/rabbitmq
+    ports:
+      - 25672:5672
+    depends_on:
+      - db
+      - redis
+
+volumes:
+  mysql_vol:
+  redis_vol:
+  rabbitmq_vol:
+  static_volume:
+  media_volume:
