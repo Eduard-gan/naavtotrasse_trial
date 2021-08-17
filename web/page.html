@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+    <title>Forum trackings</title>
+
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css"/>
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"/>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver"></script>
+    <script src="https://unpkg.com/vue@latest/dist/vue.js"></script>
+    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js"></script>
+  </head>
+  <body>
+
+    <!-- Template -->
+    <div id="app">
+        <b-pagination
+                v-model="currentPage"
+                :total-rows="rows"
+                :per-page="perPage">
+        </b-pagination>
+        <b-table
+                striped
+                bordered
+                hover
+                id="my-table"
+                :busy.sync="isBusy"
+                :items="dataProvider"
+                :fields="fields"
+                :current-page="currentPage"
+                :table-variant="tableVariant"
+                :per-page="perPage">
+        </b-table>
+    </div>
+
+    <!-- Application -->
+    <script>
+        new Vue({
+            el: '#app',
+
+            data() {
+                return {
+                    isBusy: false,
+
+                    fields: ['url', 'user', 'forum', 'mark_time'],
+                    tableVariant: "secondary",
+
+                    perPage: 10,
+                    currentPage: 1,
+                    rows: 1
+                }
+            },
+
+            methods: {
+                dataProvider(ctx) {
+                    let promise = axios.get('http://localhost:8005/api/forum/read_track' + '?page=' + ctx.currentPage);
+                    return promise.then(
+                        response => {this.rows = response.data.count; return response.data.results}
+                    ).catch(
+                        error => {return []}
+                    );
+                },
+            }
+        });
+    </script>
+  </body>
+</html>
